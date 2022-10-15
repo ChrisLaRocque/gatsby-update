@@ -163,9 +163,10 @@ function run(tag = "latest", excluded = []) {
 const flags = yargs(process.argv.slice(2))
   .options({
     tag: { type: "string", default: "latest" },
-    excluded: { type: "array", default: [] },
+    excluded: { alias: "exclude", type: "array", default: [] },
   })
   .parseSync();
+
 const { tag, excluded } = flags;
 run(tag, excluded);
 // run("next", ["gatsby-plugin-vanilla-extract"])

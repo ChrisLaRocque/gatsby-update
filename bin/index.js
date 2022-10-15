@@ -130,7 +130,7 @@ function run(tag = "latest", excluded = []) {
 const flags = (0, yargs_1.default)(process.argv.slice(2))
     .options({
     tag: { type: "string", default: "latest" },
-    excluded: { type: "array", default: [] },
+    excluded: { alias: "exclude", type: "array", default: [] },
 })
     .parseSync();
 const { tag, excluded } = flags;
