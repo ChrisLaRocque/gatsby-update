@@ -1,0 +1,42 @@
+{
+  "name": "gatsby-update",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rollup -c",
+    "dev": "tsc --watch"
+  },
+  "main": "bin/index.js",
+  "bin": {
+    "gatsby-update": "./bin/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChrisLaRocque/gatsby-update.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ChrisLaRocque/gatsby-update/issues"
+  },
+  "homepage": "https://github.com/ChrisLaRocque/gatsby-update#readme",
+  "devDependencies": {
+    "@types/node": "^18.11.0",
+    "@types/yargs": "^17.0.13",
+    "@typescript-eslint/eslint-plugin": "^5.40.0",
+    "@typescript-eslint/parser": "^5.40.0",
+    "eslint": "^8.25.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-standard-with-typescript": "^23.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.3.0",
+    "eslint-plugin-promise": "^6.1.0",
+    "typescript": "^4.8.4"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "yargs": "^17.6.0"
+  }
+}
