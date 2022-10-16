@@ -14,11 +14,11 @@ const chalk_1 = __importDefault(require("chalk"));
 function getLockFile(cwd) {
     try {
         if (fs_1.default.existsSync(path_1.default.resolve(cwd, "package-lock.json"))) {
-            console.log(`Found a ${chalk_1.default.yellow("package-lock.json")} file, using ${chalk_1.default.green("npm")}`);
+            console.log(`Found a package-lock.json file, using ${chalk_1.default.green("npm")}`);
             return "npm";
         }
         else if (fs_1.default.existsSync(path_1.default.resolve(cwd, "yarn.lock"))) {
-            console.log(`Found a ${chalk_1.default.yellow("yarn.lock")} file, using ${chalk_1.default.green("yarn")}`);
+            console.log(`Found a yarn.lock file, using ${chalk_1.default.green("yarn")}`);
             return "yarn";
         }
         else {
@@ -86,7 +86,7 @@ function getGatsbyPlugins(packageJSON, excluded) {
     const deps = [...Object.keys(packageJSON.dependencies)].filter((pluginName) => pluginName === "gatsby" || pluginName.startsWith("gatsby-"));
     if (excluded.length) {
         const excludedDeps = deps.filter((dep) => excluded.indexOf(dep) === -1);
-        console.log(`All packages minus ${chalk_1.default.green("excluded")}`, excludedDeps);
+        console.log(`${chalk_1.default.hex("#663399")("Gatsby")} packages minus ${chalk_1.default.yellow("excluded")}`, excludedDeps);
         return excludedDeps;
     }
     console.log(`Found the following ${chalk_1.default.hex("#663399")("Gatsby")} packages in package.json:\n`, deps);
@@ -122,7 +122,7 @@ function run(tag = "latest", excluded = []) {
                     return `npm install ${join} --legacy-peer-deps`;
             }
         };
-        console.log(`Installing plugins found in package.json at ${chalk_1.default.green(`${tag}`)}`);
+        console.log(`${chalk_1.default.green("Installing")} plugins found in package.json at ${chalk_1.default.green(`${tag}`)}`);
         return (0, node_child_process_1.exec)(buildCommand(packageManager), (error, stdout, stderr) => {
             if (error) {
                 console.error(`Error updating`);
@@ -133,12 +133,13 @@ function run(tag = "latest", excluded = []) {
         });
     }
     removePrevDeps(); // Remove old lockfiles + node_modules
+    console.log(`${chalk_1.default.yellow("Excluding:")}`, excluded);
     const plugins = getGatsbyPlugins(getPackageJSON(cwd), excluded || []); // Get Gatsby packages from package.json
     installPlugins(plugins, tag); // u already kno
 }
 const flags = (0, yargs_1.default)(process.argv.slice(2))
     .options({
-    tag: { type: "string", default: "latest" },
+    tag: { type: "string", default: "latest", choices: ["latest", "next"] },
     excluded: { alias: "exclude", type: "array", default: [] },
 })
     .parseSync();

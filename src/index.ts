@@ -17,17 +17,11 @@ function getLockFile(cwd: string): string {
   try {
     if (fs.existsSync(path.resolve(cwd, "package-lock.json"))) {
       console.log(
-        `Found a ${chalk.yellow("package-lock.json")} file, using ${chalk.green(
-          "npm"
-        )}`
+        `Found a package-lock.json file, using ${chalk.green("npm")}`
       );
       return "npm";
     } else if (fs.existsSync(path.resolve(cwd, "yarn.lock"))) {
-      console.log(
-        `Found a ${chalk.yellow("yarn.lock")} file, using ${chalk.green(
-          "yarn"
-        )}`
-      );
+      console.log(`Found a yarn.lock file, using ${chalk.green("yarn")}`);
       return "yarn";
     } else {
       console.log(
@@ -107,7 +101,12 @@ function getGatsbyPlugins(
   );
   if (excluded.length) {
     const excludedDeps = deps.filter((dep) => excluded.indexOf(dep) === -1);
-    console.log(`All packages minus ${chalk.green("excluded")}`, excludedDeps);
+    console.log(
+      `${chalk.hex("#663399")("Gatsby")} packages minus ${chalk.yellow(
+        "excluded"
+      )}`,
+      excludedDeps
+    );
     return excludedDeps;
   }
   console.log(
@@ -151,7 +150,9 @@ function run(tag = "latest", excluded = []) {
       }
     };
     console.log(
-      `Installing plugins found in package.json at ${chalk.green(`${tag}`)}`
+      `${chalk.green(
+        "Installing"
+      )} plugins found in package.json at ${chalk.green(`${tag}`)}`
     );
     return exec(buildCommand(packageManager), (error, stdout, stderr) => {
       if (error) {
@@ -163,12 +164,13 @@ function run(tag = "latest", excluded = []) {
     });
   }
   removePrevDeps(); // Remove old lockfiles + node_modules
+  console.log(`${chalk.yellow("Excluding:")}`, excluded);
   const plugins = getGatsbyPlugins(getPackageJSON(cwd), excluded || []); // Get Gatsby packages from package.json
   installPlugins(plugins, tag); // u already kno
 }
 const flags = yargs(process.argv.slice(2))
   .options({
-    tag: { type: "string", default: "latest" },
+    tag: { type: "string", default: "latest", choices: ["latest", "next"] },
     excluded: { alias: "exclude", type: "array", default: [] },
   })
   .parseSync();
