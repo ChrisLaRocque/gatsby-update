@@ -64,8 +64,17 @@ function removePrevDeps() {
 }
 // Return package.json file contents
 function getPackageJSON(cwd) {
-    const data = fs_1.default.readFileSync(path_1.default.resolve(cwd, "package.json"), "utf8");
-    return JSON.parse(data);
+    try {
+        const data = fs_1.default.readFileSync(path_1.default.resolve(cwd, "package.json"), "utf8");
+        return JSON.parse(data);
+    }
+    catch (err) {
+        console.error("Error reading package.json in this directory.");
+        throw new Error();
+    }
+}
+function packageJSONExists() {
+    return fs_1.default.existsSync(path_1.default.resolve(cwd, "package.json"));
 }
 /**
  * Filter dependencies in package.json for their gatsby-ness
@@ -89,6 +98,10 @@ function getGatsbyPlugins(packageJSON, excluded) {
  * @param {Array.<string>} excluded - Names of packages to exclude, some don't use `next` tag.
  */
 function run(tag = "latest", excluded = []) {
+    if (!packageJSONExists()) {
+        console.error(`${chalk_1.default.red("Error:")} no package.json in this directory`);
+        return;
+    }
     // Return early if not using node v18
     const major = process.versions.node.split(".")[0];
     if (major != "18") {
@@ -99,10 +112,6 @@ function run(tag = "latest", excluded = []) {
     // Actually run npm install or yarn add
     function installPlugins(plugins, tag) {
         const join = plugins.join(`@${tag} `);
-        // const buildCommand = {
-        //   npm: `npm install ${join} --legacy-peer-deps`,
-        //   yarn: `yarn add ${join}`,
-        // }[packageManager];
         const buildCommand = (packageManager) => {
             switch (packageManager) {
                 case "npm":

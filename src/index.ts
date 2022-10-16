@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 
 const cwd = process.cwd();
-import yargs, { Arguments } from "yargs";
+import yargs from "yargs";
 
 import { exec } from "node:child_process";
 
@@ -81,10 +81,17 @@ function removePrevDeps() {
 
 // Return package.json file contents
 function getPackageJSON(cwd: string): PackageJSON {
-  const data = fs.readFileSync(path.resolve(cwd, "package.json"), "utf8");
-  return JSON.parse(data);
+  try {
+    const data = fs.readFileSync(path.resolve(cwd, "package.json"), "utf8");
+    return JSON.parse(data);
+  } catch (err: unknown) {
+    console.error("Error reading package.json in this directory.");
+    throw new Error();
+  }
 }
-
+function packageJSONExists() {
+  return fs.existsSync(path.resolve(cwd, "package.json"));
+}
 /**
  * Filter dependencies in package.json for their gatsby-ness
  * @param {Object} packageJSON - The output of getPackageJSON above.
@@ -118,22 +125,21 @@ function getGatsbyPlugins(
  * @param {Array.<string>} excluded - Names of packages to exclude, some don't use `next` tag.
  */
 function run(tag = "latest", excluded = []) {
+  if (!packageJSONExists()) {
+    console.error(`${chalk.red("Error:")} no package.json in this directory`);
+    return;
+  }
   // Return early if not using node v18
   const major = process.versions.node.split(".")[0];
   if (major != "18") {
     console.error(`${chalk.red("Error:")} Gatsby 5 requires node v18`);
     return;
   }
-
   const packageManager = getLockFile(cwd); // Determine whether to use yarn or npm
 
   // Actually run npm install or yarn add
   function installPlugins(plugins: string[], tag: string) {
     const join = plugins.join(`@${tag} `);
-    // const buildCommand = {
-    //   npm: `npm install ${join} --legacy-peer-deps`,
-    //   yarn: `yarn add ${join}`,
-    // }[packageManager];
     const buildCommand = (packageManager: string) => {
       switch (packageManager) {
         case "npm":
