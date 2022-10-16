@@ -104,7 +104,7 @@ function run(tag = "latest", excluded = []) {
     }
     // Return early if not using node v18
     const major = process.versions.node.split(".")[0];
-    if (major != "18") {
+    if (tag === "next" && major != "18") {
         console.error(`${chalk_1.default.red("Error:")} Gatsby 5 requires node v18`);
         return;
     }

@@ -8,6 +8,8 @@ Meant to be run with `npx` when you want to get the latest of all your Gatsby pl
 npx gatsby-update
 ```
 
+You need to be using node 18
+
 ### Options
 
 #### `--tag latest | next`
@@ -22,4 +24,4 @@ Plugins to exclude from the update. As noted above, the script aims to update `g
 
 You can obviously look at the logic in `src/index.ts` but TLDR of what goes on when you run the script:
 
-1. Guess package manager based on
+1. Guess package manager based on lockfile in directory
